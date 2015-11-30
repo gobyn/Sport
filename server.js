@@ -24,22 +24,23 @@ app.use(stylus.middleware({
 
 app.use(express.static(__dirname + '/public'));
 
-mongoose.connect('mongodb://gobyn:0300159@ds059804.mongolab.com:59804/sport');
+mongoose.connect('mongodb://' + process.env.IP + '/sport');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error...'));
 db.once('open', function callback(){
 	console.log('sport db opened');
 });
 
-var messageSchema = mongoose.Schema({
-	message: String
+var playerSchema = mongoose.Schema({
+	lastName: String,
+	firstName: String
 });
-var Message = mongoose.model('Message', messageSchema);
+var Player = mongoose.model('Player', playerSchema);
 var mongoMessage;
-Message.findOne().exec(function(err, messageDoc){
-	console.log(messageDoc);
+Player.findOne().exec(function(err, playerDoc){
+	console.log(playerDoc);
 	console.log(err);
-	//mongoMessage = messageDoc.message;
+	mongoMessage = "Player: " + playerDoc.lastName + " " + playerDoc.firstName;
 });
 
 
@@ -53,7 +54,6 @@ app.get('*', function(req, res){
 	});
 });
 
-var port = 3030;
-app.listen(process.env.PORT, process.env.IP);
+var port = process.env.PORT;
+app.listen(port, process.env.IP);
 console.log('Listening on port ' + port + '...');
-console.log(process.env.IP);
