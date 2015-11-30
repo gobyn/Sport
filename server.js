@@ -24,7 +24,7 @@ app.use(stylus.middleware({
 
 app.use(express.static(__dirname + '/public'));
 
-mongoose.connect('mongodb://localhost/sport');
+mongoose.connect('mongodb://'+process.env.IP+'/sport');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error...'));
 db.once('open', function callback(){
@@ -37,8 +37,11 @@ var messageSchema = mongoose.Schema({
 var Message = mongoose.model('Message', messageSchema);
 var mongoMessage;
 Message.findOne().exec(function(err, messageDoc){
-	mongoMessage = messageDoc.message;
+	console.log(messageDoc);
+	console.log(err);
+	//mongoMessage = messageDoc.message;
 });
+
 
 app.get('/partials/:partialPath', function(req, res){
 	res.render('partials/' + req.params.partialPath);
@@ -51,5 +54,6 @@ app.get('*', function(req, res){
 });
 
 var port = 3030;
-app.listen(port);
+app.listen(process.env.PORT, process.env.IP);
 console.log('Listening on port ' + port + '...');
+console.log(process.env.IP);
