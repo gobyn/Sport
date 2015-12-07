@@ -1,0 +1,6 @@
+.panel.panel-primary
+    .panel-heading.text-center Complete attendances
+    .panel-body
+        .row(ng-repeat="activity in activities | limitTo:10")
+            .col-md-3 {{activity.date | date:'MMM d'}}
+            .col-md-9 {{activity.type}}

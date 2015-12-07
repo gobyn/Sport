@@ -1,2 +1,10 @@
-h1 This is a Partial
-h2 {{ myVar }}
+.container
+    .jumbotron
+        h1 Sport
+        p {{ myVar }}
+
+    .row
+        .col-md-6
+            div(ng-include="'/partials/incomplete-attendances'")
+        .col-md-6
+            div(ng-include="'/partials/complete-attendances'")
