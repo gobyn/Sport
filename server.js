@@ -24,7 +24,11 @@ app.use(stylus.middleware({
 
 app.use(express.static(__dirname + '/public'));
 
-mongoose.connect('mongodb://' + process.env.IP + '/sport');
+if(env == "development"){
+	mongoose.connect('mongodb://' + process.env.IP + '/sport');
+}else{
+	mongoose.connect('mongodb://gobyn:gobyn123@ds059804.mongolab.com:59804/sport');
+}
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error...'));
 db.once('open', function callback(){
