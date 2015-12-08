@@ -1,0 +1,7 @@
+.navbar-right(ng-controller="sportNavBarLoginCtrl")
+    form.navbar-form(ng-hide="identity.isAuthenticated()")
+        .form-group
+            input.form-controll(placeholder="Email", ng-model="username")
+        .form-group
+            input.form-controll(type="password", placeholder="Password", ng-model="password")
+        button.btn.btn-primary(ng-click="signin(username, password)") Sign in

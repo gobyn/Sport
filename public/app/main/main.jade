@@ -1,0 +1,10 @@
+.container
+    .jumbotron
+        h1 Sport
+        p {{ myVar }}
+
+    .row
+        .col-md-6
+            div(ng-include="'/partials/main/incomplete-attendances'")
+        .col-md-6
+            div(ng-include="'/partials/main/complete-attendances'")

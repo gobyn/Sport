@@ -1,0 +1,6 @@
+.panel.panel-primary
+    .panel-heading.text-center Incomplete attendances
+    .panel-body
+        .row(ng-repeat="activity in activities | filter:{isComplete:false}")
+            .col-md-12 {{activity.date | date:'dd/M/yyyy'}}
+            

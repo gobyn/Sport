@@ -1,39 +1,50 @@
 var express = require('express');
-var stylus = require('stylus');
-var logger = require('morgan');
-var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 
 var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-
 var app = express();
+var config = require('./server/config/config')[env];
 
-function compile(str, path){
-	return stylus(str).set('filename', path);
-}
+require('./server/config/express')(app, config);
+require('./server/config/mongoose')(config);
 
-app.set('views', __dirname + '/server/views');
-app.set('view engine', 'jade');
+var User = mongoose.model('User');
+passport.use(new LocalStrategy(
+	function(username, password, done){
+		User.findOne({username:username}).exec(function(err, user) {
+		    if(user){
+		    	return done(null, user);
+		    }else{
+		    	return done(null, false);
+		    }
+		})
+	})
+);
 
-app.use(logger('dev'));
-app.use(bodyParser());
-app.use(stylus.middleware({
-	src: __dirname + '/public',
-	compile: compile
-}));
-
-app.use(express.static(__dirname + '/public'));
-
-if(env == "development"){
-	mongoose.connect('mongodb://' + process.env.IP + '/sport');
-}else{
-	mongoose.connect('mongodb://gobyn:gobyn123@ds059804.mongolab.com:59804/sport');
-}
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error...'));
-db.once('open', function callback(){
-	console.log('sport db opened');
+passport.serializeUser(function(user, done){
+	if(user){
+		done(null, user._id);
+	}
 });
+
+passport.deserializeUser(function(id, done){
+	User.findOne({_id:id}).exec(function(err, user){
+		if(user){
+			return done(null, user);
+		}else{
+			return done(null, false);
+		}
+	});
+});
+
+require('./server/config/routes')(app);
+
+app.listen(config.port);
+console.log('Listening on port ' + config.port + '...');
+
+
 
 var playerSchema = mongoose.Schema({
 	lastName: String,
@@ -46,18 +57,3 @@ Player.findOne().exec(function(err, playerDoc){
 	console.log(err);
 	mongoMessage = "Player: " + playerDoc.lastName + " " + playerDoc.firstName;
 });
-
-
-app.get('/partials/:partialPath', function(req, res){
-	res.render('partials/' + req.params.partialPath);
-});
-
-app.get('*', function(req, res){
-	res.render('index', {
-		mongoMessage: mongoMessage
-	});
-});
-
-var port = process.env.PORT;
-app.listen(port, process.env.IP);
-console.log('Listening on port ' + port + '...');
