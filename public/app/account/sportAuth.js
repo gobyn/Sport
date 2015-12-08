@@ -11,6 +11,14 @@ angular.module('app').factory('sportAuth', function($http, sportIdentity, $q){
                 }
             });
             return dfd.promise;
+        },
+        logoutUser: function(){
+            var dfd = $q.defer();
+            $http.post('/logout', {logout:true}).then(function(){
+                sportIdentity.currentUser = undefined;
+                dfd.resolve();
+            });
+            return dfd.promise;
         }
     }
 });
