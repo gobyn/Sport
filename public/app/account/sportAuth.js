@@ -1,10 +1,12 @@
-angular.module('app').factory('sportAuth', function($http, sportIdentity, $q){
+angular.module('app').factory('sportAuth', function($http, sportIdentity, $q, sportUser){
     return{
         authenticateUser: function(username, password){
             var dfd = $q.defer();
             $http.post('/login', {username:username, password:password}).then(function(response){
                 if(response.data.success){
-                    sportIdentity.currentUser = response.data.user;
+                    var user = new sportUser();
+                    angular.extend(user, response.data.user);
+                    sportIdentity.currentUser = user;
                     dfd.resolve(true);
                 }else{
                     dfd.resolve(false);
@@ -19,6 +21,13 @@ angular.module('app').factory('sportAuth', function($http, sportIdentity, $q){
                 dfd.resolve();
             });
             return dfd.promise;
+        },
+        authorizeCurrentUserForRoute: function(role){
+            if(sportIdentity.isAuthorized(role)){
+				return true;
+			}else{
+				return $q.reject('not authorized');
+			}
         }
     }
 });
