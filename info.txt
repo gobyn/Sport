@@ -1,0 +1,14 @@
+Start mongoDb local (cloud9 terminal)
+- in a terminal window go to the root directory: cd
+- run the mongod shell command: ./mongod
+
+Connect to mongodb terminal aka mongo shell
+- in a terminal window make sure you are on "workspace" directory (if needed: cd workspace)
+- run the mongo command: mongo
+
+Git
+- git status: see status of changed files
+- git add . : adds the changed files
+- git commit -m "my message here" : commits the changed files with commit message
+- git push : pushes the changed files (to github)
+
